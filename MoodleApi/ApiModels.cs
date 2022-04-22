@@ -4,7 +4,6 @@ namespace MoodleApi
 {
     public interface IDataModel
     {
-
     }
 
     public enum MoodleMethod
@@ -28,6 +27,7 @@ namespace MoodleApi
         core_course_get_contents,
         core_group_get_groups,
         core_group_get_course_groups,
+        core_group_create_groups,
         core_enrol_get_enrolled_users,
         core_course_create_courses,
         core_course_update_courses,
@@ -39,8 +39,7 @@ namespace MoodleApi
         core_calendar_get_calendar_events,
         core_calendar_create_calendar_events,
         core_calendar_delete_calendar_events,
-        default_,
-        core_group_create_groups
+        default_
     }
 
     /// <summary>
@@ -52,21 +51,10 @@ namespace MoodleApi
         XML
     }
 
-    public class Function : ICloneable
+    public class Function
     {
-        public string name { get; set; }
-        public string version { get; set; }
-
-        public object Clone()
-        {
-            return this.MemberwiseClone();
-        }
-        [JsonConstructor]
-        internal Function(string name, string version)
-        {
-            this.name = name;
-            this.version = version;
-        }
+        public string? Name { get; set; }
+        public string? Version { get; set; }
     }
 
     public class Role : ICloneable
@@ -81,8 +69,8 @@ namespace MoodleApi
         }
 
         public int roleid { get; set; }
-        public string name { get; set; }
-        public string shortname { get; set; }
+        public string? name { get; set; }
+        public string? shortname { get; set; }
         public int sortorder { get; set; }
 
         public object Clone()
@@ -102,8 +90,8 @@ namespace MoodleApi
         }
 
         public int id { get; set; }
-        public string fullname { get; set; }
-        public string shortname { get; set; }
+        public string? fullname { get; set; }
+        public string? shortname { get; set; }
 
         public object Clone()
         {
@@ -111,89 +99,46 @@ namespace MoodleApi
         }
     }
 
-    public class Advancedfeature : ICloneable
+    public class AdvancedFeature
     {
-        public string name { get; set; }
-        public int value { get; set; }
-
-        public object Clone()
-        {
-            return this.MemberwiseClone();
-        }
-
-        [JsonConstructor]
-        internal Advancedfeature(string name, int value)
-        {
-            this.name = name;
-            this.value = value;
-        }
+        public string? Name { get; set; }
+        public int Value { get; set; }
     }
 
     /// <summary>
     /// Represents the data associated to the site information
     /// </summary>
-    public class Site_info : ICloneable, IDataModel
+    public class SiteInfo : IDataModel
     {
-        public string sitename { get; set; }
-        public string username { get; set; }
-        public string firstname { get; set; }
-        public string lastname { get; set; }
-        public string fullname { get; set; }
-        public string lang { get; set; }
-        public int userid { get; set; }
-        public string siteurl { get; set; }
-        public string userpictureurl { get; set; }
-        public List<Function> functions { get; set; }
-        public int downloadfiles { get; set; }
-        public int uploadfiles { get; set; }
-        public string release { get; set; }
-        public string version { get; set; }
-        public string mobilecssurl { get; set; }
-        public List<Advancedfeature> advancedfeatures { get; set; }
-        public bool usercanmanageownfiles { get; set; }
-        public int userquota { get; set; }
-        public int usermaxuploadfilesize { get; set; }
-        public int userhomepage { get; set; }
-
-        public object Clone()
-        {
-            return this.MemberwiseClone();
-        }
-        [JsonConstructor]
-        internal Site_info(string sitename, string username, string firstname, string lastname, string fullname,
-            string lang, int userid, string siteurl, string userpictureurl, List<Function> functions, int downloadfiles,
-            int uploadfiles, string release, string version, string mobilcssurl, List<Advancedfeature> advancedfeatures,
-            bool usercanmanageownfiles, int userquota, int usermaxuploadfilesize, int userhomepage)
-        {
-            this.sitename = sitename;
-            this.username = username;
-            this.firstname = firstname;
-            this.lastname = lastname;
-            this.fullname = fullname;
-            this.lang = lang;
-            this.userid = userid;
-            this.siteurl = siteurl;
-            this.userpictureurl = userpictureurl;
-            this.functions = functions;
-            this.downloadfiles = downloadfiles;
-            this.uploadfiles = uploadfiles;
-            this.release = release;
-            this.version = version;
-            this.mobilecssurl = mobilcssurl;
-            this.advancedfeatures = advancedfeatures;
-            this.usercanmanageownfiles = usercanmanageownfiles;
-            this.userquota = userquota;
-            this.usermaxuploadfilesize = usermaxuploadfilesize;
-            this.userhomepage = userhomepage;
-        }
+        public string? SiteName { get; set; }
+        public string? UserName { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? FullName { get; set; }
+        [JsonPropertyName("lang")]
+        public string? Language { get; set; }
+        public int UserId { get; set; }
+        public string? SiteUrl { get; set; }
+        public string? UserPictureUrl { get; set; }
+        public List<Function>? Functions { get; set; }
+        public int DownloadFiles { get; set; }
+        public int UploadFiles { get; set; }
+        public string? Release { get; set; }
+        public string? Version { get; set; }
+        public string? MobileCssUrl { get; set; }
+        public List<AdvancedFeature>? AdvancedFeatures { get; set; }
+        public bool UserCanManageOwnFiles { get; set; }
+        public int UserQuota { get; set; }
+        public int UserMaxUploadFileSize { get; set; }
+        public int UserHomePage { get; set; }
     }
 
     public class Customfield : ICloneable
     {
-        public string type { get; set; }
-        public string value { get; set; }
-        public string name { get; set; }
-        public string shortname { get; set; }
+        public string? type { get; set; }
+        public string? value { get; set; }
+        public string? name { get; set; }
+        public string? shortname { get; set; }
 
         [JsonConstructor]
         internal Customfield(string type, string value, string name, string shortname)
@@ -206,19 +151,20 @@ namespace MoodleApi
 
         public object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
     }
 
     public class Preference : ICloneable
     {
-        public string name { get; set; }
+        public string? name { get; set; }
         public object value { get; set; }
 
         public object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
+
         [JsonConstructor]
         internal Preference(string name, string value)
         {
@@ -253,25 +199,25 @@ namespace MoodleApi
         }
 
         public int id { get; set; }
-        public string username { get; set; }
-        public string firstname { get; set; }
-        public string lastname { get; set; }
-        public string fullname { get; set; }
-        public string email { get; set; }
-        public string department { get; set; }
+        public string? username { get; set; }
+        public string? firstname { get; set; }
+        public string? lastname { get; set; }
+        public string? fullname { get; set; }
+        public string? email { get; set; }
+        public string? department { get; set; }
         public int firstaccess { get; set; }
         public int lastaccess { get; set; }
-        public string description { get; set; }
+        public string? description { get; set; }
         public int descriptionformat { get; set; }
-        public string profileimageurlsmall { get; set; }
-        public string profileimageurl { get; set; }
-        public string country { get; set; }
+        public string? profileimageurlsmall { get; set; }
+        public string? profileimageurl { get; set; }
+        public string? country { get; set; }
         public List<Customfield> customfields { get; set; }
         public List<Preference> preferences { get; set; }
 
         public object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
 
 
@@ -289,13 +235,13 @@ namespace MoodleApi
         }
 
         public int itemid { get; set; }
-        public string item { get; set; }
-        public string warningcode { get; set; }
-        public string message { get; set; }
+        public string? item { get; set; }
+        public string? warningcode { get; set; }
+        public string? message { get; set; }
 
         public object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
     }
 
@@ -316,22 +262,16 @@ namespace MoodleApi
         }
     }
 
-    public class Error : ICloneable
+    public class Error
     {
-        public Error(string exception, string errorcode, string message)
-        {
-            this.exception = exception;
-            this.errorcode = errorcode;
-            this.message = message;
-        }
+        [JsonPropertyName("exception")]
+        public string? Exception { get; set; }
 
-        public string exception { get; set; }
-        public string errorcode { get; set; }
-        public string message { get; set; }
-        public object Clone()
-        {
-            return this.MemberwiseClone();
-        }
+        [JsonPropertyName("errorcode")]
+        public string? ErrorCode { get; set; }
+
+        [JsonPropertyName("message")]
+        public string? Message { get; set; }
     }
 
     public class Courseformatoption : ICloneable
@@ -343,11 +283,11 @@ namespace MoodleApi
             this.value = value;
         }
 
-        public string name { get; set; }
+        public string? name { get; set; }
         public int value { get; set; }
         public object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
     }
 
@@ -387,15 +327,15 @@ namespace MoodleApi
         }
 
         public int id { get; set; }
-        public string shortname { get; set; }
+        public string? shortname { get; set; }
         public int categoryid { get; set; }
         public int categorysortorder { get; set; }
-        public string fullname { get; set; }
-        public string displayname { get; set; }
-        public string idnumber { get; set; }
-        public string summary { get; set; }
+        public string? fullname { get; set; }
+        public string? displayname { get; set; }
+        public string? idnumber { get; set; }
+        public string? summary { get; set; }
         public int summaryformat { get; set; }
-        public string format { get; set; }
+        public string? format { get; set; }
         public int showgrades { get; set; }
         public int newsitems { get; set; }
         public int startdate { get; set; }
@@ -410,13 +350,13 @@ namespace MoodleApi
         public int timemodified { get; set; }
         public int enablecompletion { get; set; }
         public int completionnotify { get; set; }
-        public string lang { get; set; }
-        public string forcetheme { get; set; }
+        public string? lang { get; set; }
+        public string? forcetheme { get; set; }
         public List<Courseformatoption> courseformatoptions { get; set; }
         public int? hiddensections { get; set; }
         public object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
     }
 
@@ -442,16 +382,16 @@ namespace MoodleApi
         }
 
         public int id { get; set; }
-        public string shortname { get; set; }
-        public string fullname { get; set; }
+        public string? shortname { get; set; }
+        public string? fullname { get; set; }
         public int enrolledusercount { get; set; }
-        public string idnumber { get; set; }
+        public string? idnumber { get; set; }
         public int visible { get; set; }
-        public string summary { get; set; }
+        public string? summary { get; set; }
         public int summaryformat { get; set; }
-        public string format { get; set; }
+        public string? format { get; set; }
         public bool showgrades { get; set; }
-        public string lang { get; set; }
+        public string? lang { get; set; }
         public bool enablecompletion { get; set; }
 
         public object Clone()
@@ -486,26 +426,26 @@ namespace MoodleApi
         }
 
         public int id { get; set; }
-        public string name { get; set; }
-        public string description { get; set; }
+        public string? name { get; set; }
+        public string? description { get; set; }
         public int format { get; set; }
         public int courseid { get; set; }
         public int groupid { get; set; }
         public int userid { get; set; }
         public int repeatid { get; set; }
-        public string modulename { get; set; }
+        public string? modulename { get; set; }
         public int instance { get; set; }
-        public string eventtype { get; set; }
+        public string? eventtype { get; set; }
         public int timestart { get; set; }
         public int timeduration { get; set; }
         public int visible { get; set; }
-        public string uuid { get; set; }
+        public string? uuid { get; set; }
         public int sequence { get; set; }
         public int timemodified { get; set; }
         public object subscriptionid { get; set; }
         public object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
     }
 
@@ -522,14 +462,14 @@ namespace MoodleApi
         public List<Warning> warnings { get; set; }
         public object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
     }
 
     public class NewUser : ICloneable, IDataModel
     {
         public int id { get; set; }
-        public string username { get; set; }
+        public string? username { get; set; }
 
         [JsonConstructor]
         internal NewUser(int id, string username)
@@ -547,7 +487,7 @@ namespace MoodleApi
     public class NewCourse : ICloneable, IDataModel
     {
         public int id { get; set; }
-        public string shortname { get; set; }
+        public string? shortname { get; set; }
 
         [JsonConstructor]
         internal NewCourse(int id, string username)
@@ -579,41 +519,28 @@ namespace MoodleApi
 
     }
 
-    public class AuthToken : ICloneable, IDataModel
+    public class AuthToken : IDataModel
     {
-        public string token { get; set; }
+        [JsonPropertyName("token")]
+        public string? Token { get; set; }
 
-        [JsonConstructor]
-        internal AuthToken(string token)
-        {
-            this.token = token;
-        }
-
-        public object Clone()
-        {
-            return MemberwiseClone();
-        }
+        [JsonPropertyName("privatetoken")]
+        public string? PrivateToken { get; set; }
     }
 
-    public class AuthenticationError : IDataModel, ICloneable
+    public class AuthenticationError : IDataModel
     {
-        [JsonConstructor]
-        internal AuthenticationError(string error, object stacktrace, object debuginfo, object reproductionlink)
-        {
-            this.error = error;
-            this.stacktrace = stacktrace;
-            this.debuginfo = debuginfo;
-            this.reproductionlink = reproductionlink;
-        }
+        [JsonPropertyName("error")]
+        public string? Error { get; set; }
 
-        public string error { get; set; }
-        public object stacktrace { get; set; }
-        public object debuginfo { get; set; }
-        public object reproductionlink { get; set; }
-        public object Clone()
-        {
-            return MemberwiseClone();
-        }
+        [JsonPropertyName("stacktrace")]
+        public object? StackTrace { get; set; }
+
+        [JsonPropertyName("debuginfo")]
+        public object? DebugInfo { get; set; }
+
+        [JsonPropertyName("reproductionlink")]
+        public object? ReproductionLink { get; set; }
     }
 
     public class Success : IDataModel, ICloneable
@@ -654,9 +581,9 @@ namespace MoodleApi
         }
 
         public int id { get; set; }
-        public string name { get; set; }
-        public string idnumber { get; set; }
-        public string description { get; set; }
+        public string? name { get; set; }
+        public string? idnumber { get; set; }
+        public string? description { get; set; }
         public int descriptionformat { get; set; }
         public int parent { get; set; }
         public int sortorder { get; set; }
@@ -665,7 +592,7 @@ namespace MoodleApi
         public int visibleold { get; set; }
         public int timemodified { get; set; }
         public int depth { get; set; }
-        public string path { get; set; }
+        public string? path { get; set; }
         public object theme { get; set; }
 
         public object Clone()
@@ -691,14 +618,14 @@ namespace MoodleApi
         }
 
         public int id { get; set; }
-        public string name { get; set; }
+        public string? name { get; set; }
         public int visible { get; set; }
-        public string modicon { get; set; }
-        public string modname { get; set; }
-        public string modplural { get; set; }
-        public string availability { get; set; }
+        public string? modicon { get; set; }
+        public string? modname { get; set; }
+        public string? modplural { get; set; }
+        public string? availability { get; set; }
         public int indent { get; set; }
-        public string url { get; set; }
+        public string? url { get; set; }
 
         public object Clone()
         {
@@ -709,9 +636,9 @@ namespace MoodleApi
     public class Content : ICloneable, IDataModel
     {
         public int id { get; set; }
-        public string name { get; set; }
+        public string? name { get; set; }
         public int visible { get; set; }
-        public string summary { get; set; }
+        public string? summary { get; set; }
         public int summaryformat { get; set; }
         public List<Module> modules { get; set; }
 
@@ -747,10 +674,10 @@ namespace MoodleApi
 
         public int id { get; set; }
         public int courseid { get; set; }
-        public string name { get; set; }
-        public string description { get; set; }
+        public string? name { get; set; }
+        public string? description { get; set; }
         public int descriptionformat { get; set; }
-        public string enrolmentkey { get; set; }
+        public string? enrolmentkey { get; set; }
 
         public object Clone()
         {
@@ -785,20 +712,20 @@ namespace MoodleApi
         }
 
         public int id { get; set; }
-        public string username { get; set; }
-        public string firstname { get; set; }
-        public string lastname { get; set; }
-        public string fullname { get; set; }
-        public string email { get; set; }
-        public string department { get; set; }
+        public string? username { get; set; }
+        public string? firstname { get; set; }
+        public string? lastname { get; set; }
+        public string? fullname { get; set; }
+        public string? email { get; set; }
+        public string? department { get; set; }
         public int firstaccess { get; set; }
         public int lastaccess { get; set; }
-        public string description { get; set; }
+        public string? description { get; set; }
         public int descriptionformat { get; set; }
-        public string city { get; set; }
-        public string country { get; set; }
-        public string profileimageurlsmall { get; set; }
-        public string profileimageurl { get; set; }
+        public string? city { get; set; }
+        public string? country { get; set; }
+        public string? profileimageurlsmall { get; set; }
+        public string? profileimageurl { get; set; }
         public List<Group> groups { get; set; }
         public List<Role> roles { get; set; }
         public List<Enrolledcours> enrolledcourses { get; set; }
@@ -809,5 +736,4 @@ namespace MoodleApi
             return MemberwiseClone();
         }
     }
-
 }

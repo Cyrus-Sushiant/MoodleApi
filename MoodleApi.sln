@@ -5,6 +5,8 @@ VisualStudioVersion = 17.2.32414.248
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoodleApi", "MoodleApi\MoodleApi.csproj", "{28CC6B3E-1476-4002-8F46-8016815972F9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoodleApi.Example", "MoodleApi.Example\MoodleApi.Example.csproj", "{8BCB55E0-2381-4437-88E3-AE550974E312}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{28CC6B3E-1476-4002-8F46-8016815972F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28CC6B3E-1476-4002-8F46-8016815972F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28CC6B3E-1476-4002-8F46-8016815972F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BCB55E0-2381-4437-88E3-AE550974E312}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BCB55E0-2381-4437-88E3-AE550974E312}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BCB55E0-2381-4437-88E3-AE550974E312}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BCB55E0-2381-4437-88E3-AE550974E312}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

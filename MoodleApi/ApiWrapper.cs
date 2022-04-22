@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MoodleApi
 {
-    public class MoodleApi
+    public class Moodle
     {
         #region Properties
 
@@ -42,14 +42,19 @@ namespace MoodleApi
 
         #endregion
 
-        public MoodleApi()
+        public Moodle()
         {
         }
 
-        public MoodleApi(string uri, string token)
+        public Moodle(string uri)
         {
-            _token = token;
             _host = new Uri(uri);
+        }
+
+        public Moodle(string uri, string token)
+        {
+            _host = new Uri(uri);
+            _token = token;
         }
 
         #region Methods
@@ -152,6 +157,7 @@ namespace MoodleApi
         #endregion
 
         #region Authentications
+
         /// <summary>
         /// Returns your Api Token needed to make any calls
         /// <para />
@@ -160,19 +166,27 @@ namespace MoodleApi
         /// If you want to use the Mobile service, its shortname is moodle_mobile_app. Also useful to know,
         /// the database shortname field can be found in the table named external_services.
         /// </summary>
-        /// <param names="username"></param>
+        /// <param names="userName"></param>
         /// <param names="password"></param>
         /// <param names="serviceHostName"></param>
         /// <returns></returns>
-        public Task<AuthentiactionResponse<AuthToken>> GetApiToken(string username, string password, string serviceHostName)
+        public async Task<AuthentiactionResult> Login(string userName, string password, string serviceHostName = "moodle_mobile_app")
         {
-            if (HostIsSet is false)
-                throw new Exception("Host is not set");
+            string query = $"login/token.php?username={userName}&password={password}&service={serviceHostName}";
 
-            string query = $"login/token.php?username={username}&password={password}&service={serviceHostName}";
+            var result = await GetAuth<AuthToken>(query);
 
-            return GetAuth<AuthToken>(query);
+            if (result.Data?.Token.HasNoValue() ?? true)
+            {
+                return new AuthentiactionResult(result.Error);
+            }
+            else
+            {
+                Token = result.Data?.Token;
+                return new AuthentiactionResult();
+            }
         }
+
         #endregion
 
         #region System actions
@@ -181,13 +195,13 @@ namespace MoodleApi
         /// </summary>
         /// <param names="serviceHostNames">Returns information about a particular service.</param>
         /// <returns></returns>
-        public Task<ApiResponse<Site_info>> GetSiteInfo(string serviceHostName = "")
+        public Task<MoodleResponse<SiteInfo>> GetSiteInfo(string serviceHostName = "")
         {
             var query = GetBaseQuery(MoodleMethod.core_webservice_get_site_info);
 
             query.AppendFilterQueryIfHasValue("&serviceshortnames[0]=", serviceHostName);
 
-            return Get<Site_info>(query);
+            return Get<SiteInfo>(query);
         }
 
         #endregion
@@ -213,7 +227,7 @@ namespace MoodleApi
         /// <param names="criteria_key1">Key of the second search parameter.</param>
         /// <param names="criteria_value1">Value of the second search term.</param>
         /// <returns></returns>
-        public Task<ApiResponse<Users>> GetUsers(string criteria_key0, string criteria_value0, string? criteria_key1 = null, string? criteria_value1 = null)
+        public Task<MoodleResponse<Users>> GetUsers(string criteria_key0, string criteria_value0, string? criteria_key1 = null, string? criteria_value1 = null)
         {
             var query = GetBaseQuery(MoodleMethod.core_user_get_users);
 
@@ -244,7 +258,7 @@ namespace MoodleApi
         /// <param names="criteria_key">Key of the first search parameter.</param>
         /// <param names="criteria_value">Value of the first search term.</param>
         /// <returns></returns>
-        public Task<ApiResponse<Users>> GetUsersByField(string criteria_key, string criteria_value)
+        public Task<MoodleResponse<Users>> GetUsersByField(string criteria_key, string criteria_value)
         {
             var query = GetBaseQuery(MoodleMethod.core_user_get_users_by_field);
             query.AppendFilterQuery("&criteria[0][key]=", criteria_key)
@@ -258,7 +272,7 @@ namespace MoodleApi
         /// </summary>
         /// <param names="userid"></param>
         /// <returns></returns>
-        public Task<ApiResponse<Cources>> GetUserCourses(int userId)
+        public Task<MoodleResponse<Cources>> GetUserCourses(int userId)
         {
             var query = GetBaseQuery(MoodleMethod.core_enrol_get_users_courses);
             query.AppendFilterQuery("&userid=", userId);
@@ -293,7 +307,7 @@ namespace MoodleApi
         /// <param names="customfields_type"></param>
         /// <param names="customfields_value"></param>
         /// <returns></returns>
-        public Task<ApiResponse<NewUser>> CreateUser(string username, string firstname, string lastname,
+        public Task<MoodleResponse<NewUser>> CreateUser(string username, string firstname, string lastname,
             string email, string password,
             string auth = "", string idnumber = "", string lang = "", string calendartye = "", string theme = "",
             string timezone = "",
@@ -360,7 +374,7 @@ namespace MoodleApi
         /// <param names="customfields_type"></param>
         /// <param names="customfields_value"></param>
         /// <returns></returns>
-        public Task<ApiResponse<Success>> UpdateUser(int id, string username = "", string firstname = "",
+        public Task<MoodleResponse<Success>> UpdateUser(int id, string username = "", string firstname = "",
             string lastname = "",
             string email = "", string password = "", string auth = "", string idnumber = "", string lang = "",
             string calendartye = "", string theme = "",
@@ -404,7 +418,7 @@ namespace MoodleApi
         /// </summary>
         /// <param names="id"></param>
         /// <returns></returns>
-        public Task<ApiResponse<Success>> DeleteUser(int id)
+        public Task<MoodleResponse<Success>> DeleteUser(int id)
         {
             var query = GetBaseQuery(MoodleMethod.core_user_update_users);
             query.AppendFilterQuery("&userids[0]=", id);
@@ -423,7 +437,7 @@ namespace MoodleApi
         /// <param names="context_level"></param>
         /// <param names="instance_id"></param>
         /// <returns></returns>
-        public Task<ApiResponse<Success>> AssignRoles(int roleId, int userId, string contextId = "", string contextLevel = "", int? instanceId = null)
+        public Task<MoodleResponse<Success>> AssignRoles(int roleId, int userId, string contextId = "", string contextLevel = "", int? instanceId = null)
         {
             var query = GetBaseQuery(MoodleMethod.core_role_assign_roles);
             query.AppendFilterQuery("&assignments[0][roleid]=", roleId)
@@ -444,7 +458,7 @@ namespace MoodleApi
         /// <param names="context_level"></param>
         /// <param names="instance_id"></param>
         /// <returns></returns>
-        public Task<ApiResponse<Success>> UnassignRoles(int roleId, int userId, string contextId = "", string contextLevel = "", int? instanceId = null)
+        public Task<MoodleResponse<Success>> UnassignRoles(int roleId, int userId, string contextId = "", string contextLevel = "", int? instanceId = null)
         {
             var query = GetBaseQuery(MoodleMethod.core_role_unassign_roles);
             query.AppendFilterQuery("&unassignments[0][roleid]=", roleId)
@@ -469,7 +483,7 @@ namespace MoodleApi
         /// <param names="timeend"></param>
         /// <param names="suspend"></param>
         /// <returns></returns>
-        public Task<ApiResponse<Success>> EnrolUser(int roleId, int userId, int courceId, int? timeStart = null, int? timeEnd = null, int? suspend = null)
+        public Task<MoodleResponse<Success>> EnrolUser(int roleId, int userId, int courceId, int? timeStart = null, int? timeEnd = null, int? suspend = null)
         {
             var query = GetBaseQuery(MoodleMethod.enrol_manual_enrol_users);
             query.AppendFilterQuery("&enrolments[0][roleid]=", roleId)
@@ -488,7 +502,7 @@ namespace MoodleApi
         /// <param names="group_id"></param>
         /// <param names="user_id"></param>
         /// <returns></returns>
-        public Task<ApiResponse<Success>> AddGroupMember(int groupId, int userId)
+        public Task<MoodleResponse<Success>> AddGroupMember(int groupId, int userId)
         {
             var query = GetBaseQuery(MoodleMethod.core_group_add_group_members);
             query.AppendFilterQuery("&members[0][groupid]=", groupId)
@@ -503,7 +517,7 @@ namespace MoodleApi
         /// <param names="group_id"></param>
         /// <param names="user_id"></param>
         /// <returns></returns>
-        public Task<ApiResponse<Success>> DeleteGroupMember(int groupId, int userId)
+        public Task<MoodleResponse<Success>> DeleteGroupMember(int groupId, int userId)
         {
             var query = GetBaseQuery(MoodleMethod.core_group_delete_group_members);
             query.AppendFilterQuery("&members[0][groupid]=", groupId)
@@ -533,7 +547,7 @@ namespace MoodleApi
         /// <param names="criteria_value"><summary>Criteria[0][value] - The value to match</summary></param>
         /// <param names="addSubCategories"><summary>Return the sub categories infos (1 - default) otherwise only the category info (0)</summary></param>
         /// <returns></returns>
-        public Task<ApiResponse<Category>> GetCategories(string criteriaKey, string criteriaValue, int addSubCategories = 1)
+        public Task<MoodleResponse<Category>> GetCategories(string criteriaKey, string criteriaValue, int addSubCategories = 1)
         {
             var query = GetBaseQuery(MoodleMethod.core_course_get_categories);
             query.AppendFilterQuery("&criteria[0][key]=", criteriaKey)
@@ -548,7 +562,7 @@ namespace MoodleApi
         /// </summary>
         /// <param names="options"><summary>List of course id.If empty return all courses except front page course.</summary></param>
         /// <returns></returns>
-        public Task<ApiResponse<Course>> GetCourses(int? options = null)
+        public Task<MoodleResponse<Course>> GetCourses(int? options = null)
         {
             var query = GetBaseQuery(MoodleMethod.core_course_get_courses);
             query.AppendFilterQueryIfHasValue("&addsubcategories=", options);
@@ -561,7 +575,7 @@ namespace MoodleApi
         /// </summary>
         /// <param names="course_id"><summary>Course Id</summary></param>
         /// <returns></returns>
-        public Task<ApiResponse<Content>> GetContents(int courseId)
+        public Task<MoodleResponse<Content>> GetContents(int courseId)
         {
             var query = GetBaseQuery(MoodleMethod.core_course_get_contents);
             query.AppendFilterQuery("&courseid=", courseId);
@@ -574,7 +588,7 @@ namespace MoodleApi
         /// </summary>
         /// <param names="groupId">Group Id</param>
         /// <returns></returns>
-        public Task<ApiResponse<Group>> GetGroup(int groupId)
+        public Task<MoodleResponse<Group>> GetGroup(int groupId)
         {
             var query = GetBaseQuery(MoodleMethod.core_group_get_groups);
             query.AppendFilterQuery("&groupids[0]=", groupId);
@@ -586,7 +600,7 @@ namespace MoodleApi
         /// </summary>
         /// <param names="group_ids"><summary>Group Ids</summary></param>
         /// <returns></returns>
-        public Task<ApiResponse<Group>> GetGroups(int[] groupIds)
+        public Task<MoodleResponse<Group>> GetGroups(int[] groupIds)
         {
             var query = GetBaseQuery(MoodleMethod.core_group_get_groups);
 
@@ -603,7 +617,7 @@ namespace MoodleApi
         /// </summary>
         /// <param names="courseId"><summary>Course Id</summary></param>
         /// <returns></returns>
-        public Task<ApiResponse<Group>> GetCourseGroups(int courseId)
+        public Task<MoodleResponse<Group>> GetCourseGroups(int courseId)
         {
             var query = GetBaseQuery(MoodleMethod.core_group_get_course_groups);
             query.AppendFilterQuery("&courseid=", courseId);
@@ -616,7 +630,7 @@ namespace MoodleApi
         /// </summary>
         /// <param names="courseId"></param>
         /// <returns></returns>
-        public Task<ApiResponse<EnrolledUser>> GetEnrolledUsersByCourse(int courseId)
+        public Task<MoodleResponse<EnrolledUser>> GetEnrolledUsersByCourse(int courseId)
         {
             var query = GetBaseQuery(MoodleMethod.core_enrol_get_enrolled_users);
             query.AppendFilterQuery("&courseid=", courseId);
@@ -652,7 +666,7 @@ namespace MoodleApi
         /// <param names="courcCourseformatoption"><summary>Optional //additional options for particular course format list of ( object { names string //course format option names
         ///value string //course format option value } )} )</summary></param>
         /// <returns></returns>
-        public Task<ApiResponse<NewCourse>> CreateCourse(string fullname, string shortname, int category_id,
+        public Task<MoodleResponse<NewCourse>> CreateCourse(string fullname, string shortname, int category_id,
             string idnumber = "", string summary = "", int summaryformat = 1, string format = "", int showgrades = 0, int newsitems = 0,
             DateTime startdate = default, int numsections = int.MaxValue, int maxbytes = 104857600, int showreports = 1,
             int visible = 0, int hiddensections = int.MaxValue, int groupmode = 0,
@@ -693,7 +707,7 @@ namespace MoodleApi
         /// <param names="shortname"></param>
         /// <param names="categoryIds"></param>
         /// <returns></returns>
-        public Task<ApiResponse<NewCourse>> CreateCourses(string[] fullname, string[] shortname, int[] categoryIds)
+        public Task<MoodleResponse<NewCourse>> CreateCourses(string[] fullname, string[] shortname, int[] categoryIds)
         {
             var query = GetBaseQuery(MoodleMethod.core_course_create_courses);
             for (int i = 0; i < fullname.Count(); i++)
@@ -705,7 +719,7 @@ namespace MoodleApi
             return Get<NewCourse>(query);
         }
 
-        public Task<ApiResponse<UpdateCourseRoot>> UpdateCourse(int id, string fullname = "", string shortname = "", int category_id = int.MaxValue,
+        public Task<MoodleResponse<UpdateCourseRoot>> UpdateCourse(int id, string fullname = "", string shortname = "", int category_id = int.MaxValue,
             string idnumber = "", string summary = "", int summaryformat = 1, string format = "", int showgrades = 0, int newsitems = 0,
             DateTime startdate = default, int numsections = int.MaxValue, int maxbytes = 104857600, int showreports = 1,
             int visible = 0, int hiddensections = int.MaxValue, int groupmode = 0,
@@ -752,7 +766,7 @@ namespace MoodleApi
         /// <param names="criteria_value"></param>
         /// <param names="addSubCategories"></param>
         /// <returns></returns>
-        public Task<ApiResponse<Category>> GetGrades(int courseId, string component = "", int activityid = int.MaxValue, string[]? userIds = null)
+        public Task<MoodleResponse<Category>> GetGrades(int courseId, string component = "", int activityid = int.MaxValue, string[]? userIds = null)
         {
             var query = GetBaseQuery(MoodleMethod.core_grades_get_grades);
             query.AppendFilterQuery("&courseid=", courseId)
@@ -782,7 +796,7 @@ namespace MoodleApi
         /// <param name="courseids"></param>
         /// <param name="eventids"></param>
         /// <returns></returns>
-        public Task<ApiResponse<Events>> GetCalanderEvents(int[]? groupids = null, int[]? courseids = null, int[]? eventids = null)
+        public Task<MoodleResponse<Events>> GetCalanderEvents(int[]? groupids = null, int[]? courseids = null, int[]? eventids = null)
         {
             var query = GetBaseQuery(MoodleMethod.core_calendar_get_calendar_events);
 
@@ -815,7 +829,7 @@ namespace MoodleApi
         /// <param name="visible"></param>
         /// <param name="sequences"></param>
         /// <returns></returns>
-        public Task<ApiResponse<Events>> CreateCalanderEvents(string[] names, string[]? descriptions = null,
+        public Task<MoodleResponse<Events>> CreateCalanderEvents(string[] names, string[]? descriptions = null,
              int[]? formats = null, int[]? groupids = null, int[]? courseids = null, int[]? repeats = null,
              string[]? eventtypes = null, DateTime[]? timestarts = null, TimeSpan[]? timedurations = null,
              int[]? visible = null, int[]? sequences = null)
@@ -874,7 +888,7 @@ namespace MoodleApi
         /// <param name="repeats"></param>
         /// <param name="descriptions"></param>
         /// <returns></returns>
-        public Task<ApiResponse<Events>> DeleteCalanderEvents(int[]? eventids, int[]? repeats, string[]? descriptions = null)
+        public Task<MoodleResponse<Events>> DeleteCalanderEvents(int[]? eventids, int[]? repeats, string[]? descriptions = null)
         {
             var query = GetBaseQuery(MoodleMethod.core_calendar_delete_calendar_events);
 
@@ -907,7 +921,7 @@ namespace MoodleApi
         /// <param name="enrolmentkeys"></param>
         /// <param name="idnumbers"></param>
         /// <returns></returns>
-        public Task<ApiResponse<Group>> CreateGroups(string[]? names = null, int[]? courseids = null, string[]? descriptions = null,
+        public Task<MoodleResponse<Group>> CreateGroups(string[]? names = null, int[]? courseids = null, string[]? descriptions = null,
             int[]? descriptionformats = null, string[]? enrolmentkeys = null, string[]? idnumbers = null)
         {
             var query = GetBaseQuery(MoodleMethod.core_group_create_groups);
@@ -951,19 +965,16 @@ namespace MoodleApi
 
             try
             {
-                string uri = Host!.AbsoluteUri + query;
-                if (Host.Scheme == "https")
+                if (Host!.Scheme == "https")
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-                var request = WebRequest.Create(Uri.EscapeUriString(uri));
-                using (var response = await request.GetResponseAsync())
+                using HttpClient httpClient = new()
                 {
-                    using (var reader = new StreamReader(response.GetResponseStream()))
-                    {
-                        var data = JObject.Parse(await reader.ReadToEndAsync());
-                        return new AuthentiactionResponse<T>(new AuthentiactionResponseRaw(data));
-                    }
-                }
+                    BaseAddress = Host
+                };
+
+                var data = await httpClient.GetStringAsync(query);
+                return new AuthentiactionResponse<T>(data);
             }
             catch (WebException)
             {
@@ -973,37 +984,23 @@ namespace MoodleApi
         }
 
 
-        private async Task<ApiResponse<T>> Get<T>(string query) where T : IDataModel
+        private async Task<MoodleResponse<T>> Get<T>(string query) where T : IDataModel
         {
             if (HostIsSet is false)
                 throw new Exception("Host is not set");
 
             try
             {
-                string uri = Host!.AbsoluteUri + query;
-                if (Host.Scheme == "https")
+                if (Host!.Scheme == "https")
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-                var request = WebRequest.Create(Uri.EscapeUriString(uri));
-                using (var response = await request.GetResponseAsync())
+                using HttpClient httpClient = new()
                 {
-                    using (var reader = new StreamReader(response.GetResponseStream()))
-                    {
-                        var result = await reader.ReadToEndAsync();
-                        if (result.ToLower() == "null")
-                            result = "{IsSuccessful: true,}";
-                        try
-                        {
-                            var data = JArray.Parse(result);
-                            return new ApiResponse<T>(new ApiResponseRaw(data));
-                        }
-                        catch (Exception ex)
-                        {
-                            var data = JObject.Parse(result);
-                            return new ApiResponse<T>(new ApiResponseRaw(data));
-                        }
-                    }
-                }
+                    BaseAddress = Host
+                };
+
+                var data = await httpClient.GetStringAsync(query);
+                return new MoodleResponse<T>(data);
             }
             catch (WebException)
             {
@@ -1012,7 +1009,7 @@ namespace MoodleApi
             }
         }
 
-        private async Task<ApiResponse<T>> Get<T>(StringBuilder query) where T : IDataModel
+        private async Task<MoodleResponse<T>> Get<T>(StringBuilder query) where T : IDataModel
         {
             return await Get<T>(query.ToString());
         }

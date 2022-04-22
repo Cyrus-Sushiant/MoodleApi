@@ -1,85 +1,63 @@
-﻿using System.Text.Json;
+﻿using MoodleApi.Extensions;
 
 namespace MoodleApi
 {
- /// <summary>
- /// Repressents the response from authentication
- /// </summary>
- /// <typeparam name="T"></typeparam>
+    /// <summary>
+    /// Repressents the response from authentication
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class AuthentiactionResponse<T> where T : IDataModel
     {
-        public T Data { get; private set; }
+        public T? Data { get; }
+        public AuthenticationError? Error { get; }
 
-        public AuthenticationError Error { get; private set; }
-
-        internal AuthentiactionResponse(AuthentiactionResponseRaw rawResponse)
+        internal AuthentiactionResponse(string stringJson)
         {
-            this.Error = rawResponse.Error.Deserialize<AuthenticationError>();
-            this.Data = rawResponse.Data.Deserialize<T>();
+            Data = stringJson.ParseJson<T>();
+            Error = stringJson.ParseJson<AuthenticationError>();
         }
     }
 
-    internal class AuthentiactionResponseRaw
+    public class AuthentiactionResult
     {
-        internal JsonElement Data { get; set; }
-        internal JsonElement Error { get; set; }
-
-        public AuthentiactionResponseRaw(JsonElement data)
+        public AuthentiactionResult(AuthenticationError? error = null)
         {
-            Data = data;
-            Error = data;
+            Error = error;
+            Succeeded = error is null;
         }
+
+        public bool Succeeded { get; }
+        public AuthenticationError? Error { get; }
     }
 
     /// <summary>
     /// Represents the API response.
     /// </summary>
     /// <typeparam name="T">The type of data that's going to be contained in the response.</typeparam>
-    public class ApiResponse<T> where T : IDataModel
+    public class MoodleResponse<T> where T : IDataModel
     {
         /// <summary>
         /// Gets the API response data.
         /// </summary>
-        public string Status { get; private set; }
+        public bool Succeeded { get; }
 
-        public T[] DataArray { get; private set; }
+        public T[]? DataArray { get; }
 
-        public T Data { get; private set; }
+        public T? Data { get; }
 
-        public Error Error { get; private set; }
-    
-        internal ApiResponse(ApiResponseRaw rawResponse)
+        public Error? Error { get; }
+
+        internal MoodleResponse(string stringJson)
         {
-            this.Error = rawResponse.Error.Deserialize<Error>();
+            Error = stringJson.ParseJson<Error>();
 
-            if (string.IsNullOrEmpty(Error.errorcode) && string.IsNullOrEmpty(Error.exception) && string.IsNullOrEmpty(Error.message))
-                Status = "Succesful";
-            else
-                Status = "Failed";
+            Succeeded = Error is null || (Error.ErrorCode.HasNoValue() && Error.Exception.HasNoValue() && Error.Message.HasNoValue());
 
-            if (rawResponse.DataArray is not null)
-                this.DataArray = rawResponse.DataArray.Select(d => d.Deserialize<T>()).ToArray();
-            else
-                this.Data = rawResponse.Data.Deserialize<T>();
+            if (Succeeded)
+            {
+                Error = null;
+                Data = stringJson.ParseJson<T>();
+            }
         }
-    }
-
-    internal class ApiResponseRaw
-    {
-        public ApiResponseRaw(JsonElement data)
-        {
-            Data = data;
-            Error = data;
-        }
-
-        public ApiResponseRaw(JsonElement[] data)
-        {
-            DataArray = data;
-            Error = new JsonElement();
-        }
-
-        internal JsonElement[] DataArray { get; set; }
-        internal JsonElement Data { get; set; }
-        internal JsonElement Error { get; set; }
     }
 }
