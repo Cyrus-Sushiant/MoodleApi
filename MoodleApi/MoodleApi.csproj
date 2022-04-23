@@ -1,9 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<Authors>Cyrus</Authors>
+		<Version>1.0.0</Version>
+		<Description>Moodle Api Wrapper for C#</Description>
+		<RepositoryUrl>https://github.com/Cyrus-Sushiant/MoodleApi</RepositoryUrl>
+		<RepositoryType>Git</RepositoryType>
+		<Company>SmartClouds.co</Company>
+		<PackageId>MoodleApi</PackageId>
+		<Copyright>MIT License</Copyright>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageProjectUrl>https://github.com/Cyrus-Sushiant/MoodleApi</PackageProjectUrl>
+		<PackageIcon>icon.png</PackageIcon>
+		<PackageIconUrl />
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<Product>MoodleApi</Product>
+	</PropertyGroup>
 
 </Project>
