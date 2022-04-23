@@ -1,4 +1,4 @@
-﻿namespace MoodleApi.Models;;
+﻿namespace MoodleApi.Models;
 
 public class Role
 {
