@@ -8,6 +8,8 @@ namespace MoodleApi.Models.Responses;
 /// <typeparam name="T">The type of data that's going to be contained in the response.</typeparam>
 public class MoodleResponse<T> where T : IDataModel
 {
+    private readonly Error? error;
+
     /// <summary>
     /// Gets the API response data.
     /// </summary>
@@ -17,18 +19,22 @@ public class MoodleResponse<T> where T : IDataModel
 
     public T? Data { get; }
 
-    public Error? Error { get; }
-
+    public Error? Error => error;
     internal MoodleResponse(string stringJson)
     {
-        Error = stringJson.ParseJson<Error>();
-
-        Succeeded = Error is null || (Error.ErrorCode.HasNoValue() && Error.Exception.HasNoValue() && Error.Message.HasNoValue());
+        Succeeded = stringJson.TryParseJson(out error) is false || Error is null || (Error.ErrorCode.HasNoValue() && Error.Exception.HasNoValue() && Error.Message.HasNoValue());
 
         if (Succeeded)
         {
-            Error = null;
-            Data = stringJson.ParseJson<T>();
+            error = null;
+            if (stringJson.StartsWith("["))
+            {
+                DataArray = stringJson.ParseJson<T[]>();
+            }
+            else
+            {
+                Data = stringJson.ParseJson<T>();
+            }
         }
     }
 }
