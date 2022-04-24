@@ -909,24 +909,16 @@ public class Moodle
         if (HostIsSet is false)
             throw new Exception("Host is not set");
 
-        try
-        {
-            if (Host!.Scheme == "https")
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+        if (Host!.Scheme == "https")
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            using HttpClient httpClient = new()
-            {
-                BaseAddress = Host
-            };
-
-            var data = await httpClient.GetStringAsync(query);
-            return new AuthentiactionResponse<T>(data);
-        }
-        catch (WebException)
+        using HttpClient httpClient = new()
         {
-            // No internet connection
-            throw new WebException("No internet connection.");
-        }
+            BaseAddress = Host
+        };
+
+        var data = await httpClient.GetStringAsync(query);
+        return new AuthentiactionResponse<T>(data);
     }
 
 
@@ -935,24 +927,16 @@ public class Moodle
         if (HostIsSet is false)
             throw new Exception("Host is not set");
 
-        try
-        {
-            if (Host!.Scheme == "https")
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+        if (Host!.Scheme == "https")
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            using HttpClient httpClient = new()
-            {
-                BaseAddress = Host
-            };
-
-            var data = await httpClient.GetStringAsync(query);
-            return new MoodleResponse<T>(data);
-        }
-        catch (WebException)
+        using HttpClient httpClient = new()
         {
-            // No internet connection
-            throw new WebException("No internet connection.");
-        }
+            BaseAddress = Host
+        };
+
+        var data = await httpClient.GetStringAsync(query);
+        return new MoodleResponse<T>(data);
     }
 
     private async Task<MoodleResponse<T>> Get<T>(StringBuilder query) where T : IDataModel
