@@ -252,16 +252,20 @@ public class Moodle
     ///"email" (string) user email (Note: you can use % for searching but it may be considerably slower!)
     ///"auth" (string) matching user auth plugin
     /// </summary>
-    /// <param names="criteriaKey">Key of the first search parameter.</param>
-    /// <param names="criteriaValue">Value of the first search term.</param>
+    /// <param names="field">Field of the search parameter.</param>
+    /// <param names="criteriaValue">Values of the search term.</param>
     /// <returns></returns>
-    public Task<MoodleResponse<UsersData>> GetUsersByField(string criteriaKey, string criteriaValue)
+    public Task<MoodleResponse<User>> GetUsersByField(string field, params string[] values)
     {
         var query = GetBaseQuery(MoodleMethod.core_user_get_users_by_field);
-        query.AppendFilterQuery("&criteria[0][key]=", criteriaKey)
-            .AppendFilterQuery("&criteria[0][value]=", criteriaValue);
+        query.AppendFilterQuery("&field=", field);
 
-        return Get<UsersData>(query);
+        for (int i = 0; i < values.Length; i++)
+        {
+            query.Append("&values[").Append(i).Append("]=").Append(values[i]);
+        }
+
+        return Get<User>(query);
     }
 
     /// <summary>
