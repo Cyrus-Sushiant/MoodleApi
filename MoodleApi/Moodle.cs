@@ -8,6 +8,7 @@ namespace MoodleApi;
 
 public class Moodle
 {
+    private readonly HttpClient _httpClient;
     #region Properties
 
     /// <summary>
@@ -46,19 +47,9 @@ public class Moodle
 
     #region Constructors
 
-    public Moodle()
+    public Moodle(HttpClient httpClient)
     {
-    }
-
-    public Moodle(string uri)
-    {
-        _host = new Uri(uri);
-    }
-
-    public Moodle(string uri, string token)
-    {
-        _host = new Uri(uri);
-        _token = token;
+        _httpClient = httpClient;
     }
 
     #endregion
@@ -912,12 +903,8 @@ public class Moodle
         if (Host!.Scheme == "https")
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-        using HttpClient httpClient = new()
-        {
-            BaseAddress = Host
-        };
-
-        var data = await httpClient.GetStringAsync(query);
+        var requestUri = new Uri(Host, query);
+        var data = await _httpClient.GetStringAsync(requestUri);
         return new AuthentiactionResponse<T>(data);
     }
 
@@ -930,12 +917,8 @@ public class Moodle
         if (Host!.Scheme == "https")
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-        using HttpClient httpClient = new()
-        {
-            BaseAddress = Host
-        };
-
-        var data = await httpClient.GetStringAsync(query);
+        var requestUri = new Uri(Host, query);
+        var data = await _httpClient.GetStringAsync(requestUri);
         return new MoodleResponse<T>(data);
     }
 
@@ -943,6 +926,15 @@ public class Moodle
     {
         return await Get<T>(query.ToString());
     }
+    #endregion
+
+    #region Setters
+
+    public void SetHost(string url)
+    {
+        Host = new Uri(url);
+    }
+
     #endregion
 
     #endregion

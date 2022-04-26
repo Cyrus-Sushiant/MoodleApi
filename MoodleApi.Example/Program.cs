@@ -1,7 +1,23 @@
-﻿using MoodleApi;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using MoodleApi;
+using MoodleApi.Extensions;
 
-var moodle = new Moodle("https://www.moodle.org/");
-var authentiactionResult = await moodle.Login("aminsafaei.info", "123456");
+
+var builder = new HostBuilder().ConfigureServices((hostContext, services) =>
+{
+    services.AddHttpClient();
+    services.AddMoodleApi();
+}).UseConsoleLifetime();
+
+var host = builder.Build();
+
+using var serviceScope = host.Services.CreateScope();
+var services = serviceScope.ServiceProvider;
+var moodle = services.GetRequiredService<Moodle>();
+
+moodle.SetHost("https://www.moodle.org/");
+var authentiactionResult = await moodle.Login("mr.aminsafaei", "123456");
 if (authentiactionResult.Succeeded)
 {
     var siteInfo = await moodle.GetSiteInfo();
