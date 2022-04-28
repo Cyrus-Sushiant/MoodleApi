@@ -18,18 +18,18 @@ public class Cources : IDataModel
     [JsonPropertyName("lang")]
     public string? Language { get; set; }
     public bool Enablecompletion { get; set; }
-    public bool Completionhascriteria { get; set; }
-    public bool Completionusertracked { get; set; }
+    public bool CompletionHasCriteria { get; set; }
+    public bool CompletionUserTracked { get; set; }
     public int Category { get; set; }
     public double? Progress { get; set; }
     public bool? Completed { get; set; }
-    public int Startdate { get; set; }
-    public int Enddate { get; set; }
+    public int StartDate { get; set; }
+    public int EndDate { get; set; }
     public int Marker { get; set; }
-    public int Lastaccess { get; set; }
-    public bool Isfavourite { get; set; }
+    public int LastAccess { get; set; }
+    public bool IsFavourite { get; set; }
     public bool Hidden { get; set; }
     public List<OverviewFile>? OverviewFiles { get; set; }
-    public bool Showactivitydates { get; set; }
-    public bool? Showcompletionconditions { get; set; }
+    public bool ShowActivityDates { get; set; }
+    public bool? ShowCompletionConditions { get; set; }
 }
