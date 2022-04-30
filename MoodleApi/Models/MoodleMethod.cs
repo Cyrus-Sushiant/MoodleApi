@@ -3,7 +3,6 @@
 public enum MoodleMethod
 {
     core_webservice_get_site_info,
-    core_user_get_users,
     core_user_get_users_by_field,
     core_enrol_get_users_courses,
     core_user_create_users,
