@@ -21,8 +21,24 @@ var authentiactionResult = await moodle.Login("mr.aminsafaei", "123456");
 if (authentiactionResult.Succeeded)
 {
     var siteInfo = await moodle.GetSiteInfo();
-
     Console.WriteLine($"Site Name: {siteInfo.Data.SiteName}");
+
+    var studentData = await moodle.GetUsersByField("username", "StudentTest");
+    if (studentData.Succeeded)
+    {
+        var student = studentData.DataArray[0];
+        Console.WriteLine($"Student name: {student.FirstName} {student.LastName}");
+
+        var coursesData = await moodle.GetUserCourses(student.Id);
+        if (coursesData.Succeeded)
+        {
+            for (int i = 0; i < coursesData.DataArray.Length; i++)
+            {
+                var course = coursesData.DataArray[i];
+                Console.WriteLine($"{i}. Cource name: {course.DisplayName}");
+            }
+        }
+    }
 }
 
 Console.ReadLine();
