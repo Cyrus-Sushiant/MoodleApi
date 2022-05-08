@@ -12,31 +12,16 @@ public class Moodle
     #region Properties
 
     /// <summary>
-    /// field that holds your api token
-    /// </summary>
-    private string? _token;
-
-    /// <summary>
     /// This property sets you Api token.
     /// </summary>
-    public string? Token
-    {
-        get { return _token; }
-        set { _token = value; }
-    }
+    public string? Token { get; set; }
 
     /// <summary>
     /// Repressents if the token is set.
     /// </summary>
-    private bool TokenIsSet => string.IsNullOrEmpty(_token) is false;
+    private bool TokenIsSet => string.IsNullOrEmpty(Token) is false;
 
-    private Uri? _host;
-
-    public Uri? Host
-    {
-        get { return _host; }
-        set { _host = value; }
-    }
+    public Uri? Host { get; set; }
 
     /// <summary>
     /// Represents if the host address is set.
@@ -60,8 +45,7 @@ public class Moodle
 
     private int DateTimeToUnixTimestamp(DateTime dateTime)
     {
-        return Convert.ToInt32((TimeZoneInfo.ConvertTimeToUtc(dateTime) -
-               new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds);
+        return Convert.ToInt32((TimeZoneInfo.ConvertTimeToUtc(dateTime) - new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds);
     }
 
     private string ParseFormat(MoodleFormat format)
