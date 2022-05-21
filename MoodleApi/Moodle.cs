@@ -66,6 +66,8 @@ public class Moodle
         {
             case MoodleMethod.core_webservice_get_site_info:
                 return "core_webservice_get_site_info";
+            case MoodleMethod.core_user_get_users:
+                return "core_user_get_users";
             case MoodleMethod.core_user_get_users_by_field:
                 return "core_user_get_users_by_field";
             case MoodleMethod.core_enrol_get_users_courses:
@@ -185,8 +187,44 @@ public class Moodle
 
     #endregion
 
-    #region User Actions 
-    
+    #region User Actions
+
+    /// <summary>
+    /// Search for users matching the parameters of the call. This call will return matching user accounts with profile fields.
+    ///  The key/value pairs to be considered in user search. Values can not be empty. Specify different keys only once
+    ///  (fullname =&gt; 'user1', auth =&gt; 'manual', ...) - key occurences are forbidden. The search is executed with AND operator on the criterias.
+    ///  Invalid criterias (keys) are ignored, the search is still executed on the valid criterias. You can search without criteria,
+    ///  but the function is not designed for it. It could very slow or timeout. The function is designed to search some specific users.
+    /// <para />
+    /// "id" (int) matching user id<para />
+    ///"lastname" (string) user last names (Note: you can use % for searching but it may be considerably slower!)<para />
+    ///"firstname" (string) user first names (Note: you can use % for searching but it may be considerably slower!)<para />
+    ///"idnumber" (string) matching user idnumber<para />
+    ///"username" (string) matching user username<para />
+    ///"email" (string) user email (Note: you can use % for searching but it may be considerably slower!)<para />
+    ///"auth" (string) matching user auth plugin<para />
+    /// </summary>
+    /// <param names="criteriaKey">Key of the first search parameter.</param>
+    /// <param names="criteriaValue">Value of the first search term.</param>
+    /// <param names="criterias">criteria key and value of the second and other search parameter.</param>
+    /// <returns></returns>
+    public Task<MoodleResponse<UsersData>> GetUsers(string criteriaKey, string criteriaValue, params (string? Key, string? Value)[] criterias)
+    {
+        var query = GetBaseQuery(MoodleMethod.core_user_get_users);
+
+        query.Append("&criteria[0][key]=").Append(criteriaKey)
+            .Append("&criteria[0][value]=").Append(criteriaValue);
+
+        for (int i = 0; i < criterias.Length; i++)
+        {
+            int index = i + 1;
+            query.Append("&criteria[").Append(index).Append("][key]=").Append(criterias[i].Key)
+                .Append("&criteria[").Append(index).Append("][value]=").Append(criterias[i].Value);
+        }
+
+        return Get<UsersData>(query);
+    }
+
     /// <summary>
     /// Retrieve users information for a specified unique field - If you want to do a user search, use GetUsers()
     /// 
