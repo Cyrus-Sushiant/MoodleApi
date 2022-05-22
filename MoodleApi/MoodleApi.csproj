@@ -5,7 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Authors>Cyrus</Authors>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<Description>Moodle Api Wrapper for C#</Description>
 		<RepositoryUrl>https://github.com/Cyrus-Sushiant/MoodleApi</RepositoryUrl>
 		<RepositoryType>Git</RepositoryType>
