@@ -64,59 +64,59 @@ public class Moodle
     {
         switch (method)
         {
-            case MoodleMethod.core_webservice_get_site_info:
+            case MoodleMethod.CoreWebserviceGetSiteInfo:
                 return "core_webservice_get_site_info";
-            case MoodleMethod.core_user_get_users:
+            case MoodleMethod.CoreUserGetUsers:
                 return "core_user_get_users";
-            case MoodleMethod.core_user_get_users_by_field:
+            case MoodleMethod.CoreUserGetUsersByField:
                 return "core_user_get_users_by_field";
-            case MoodleMethod.core_enrol_get_users_courses:
+            case MoodleMethod.CoreEnrolGetUsersCourses:
                 return "core_enrol_get_users_courses";
-            case MoodleMethod.core_user_create_users:
+            case MoodleMethod.CoreUserCreateUsers:
                 return "core_user_create_users";
-            case MoodleMethod.core_user_update_users:
+            case MoodleMethod.CoreUserUpdateUsers:
                 return "core_user_update_users";
-            case MoodleMethod.core_user_delete_users:
+            case MoodleMethod.CoreUserDeleteUsers:
                 return "core_user_delete_users";
-            case MoodleMethod.core_role_assign_roles:
+            case MoodleMethod.CoreRoleAssignRoles:
                 return "core_role_assign_roles";
-            case MoodleMethod.core_role_unassign_roles:
+            case MoodleMethod.CoreRoleUnassignRoles:
                 return "core_role_unassign_roles";
-            case MoodleMethod.enrol_manual_enrol_users:
+            case MoodleMethod.EnrolManualEnrolUsers:
                 return "enrol_manual_enrol_users";
-            case MoodleMethod.core_group_add_group_members:
+            case MoodleMethod.CoreGroupAddGroupMembers:
                 return "core_group_add_group_members";
-            case MoodleMethod.core_group_delete_group_members:
+            case MoodleMethod.CoreGroupDeleteGroupMembers:
                 return "core_group_delete_group_members";
-            case MoodleMethod.core_course_get_categories:
+            case MoodleMethod.CoreCourseGetCategories:
                 return "core_course_get_categories";
-            case MoodleMethod.core_course_get_courses:
+            case MoodleMethod.CoreCourseGetCourses:
                 return "core_course_get_courses";
-            case MoodleMethod.core_course_get_contents:
+            case MoodleMethod.CoreCourseGetContents:
                 return "core_course_get_contents";
-            case MoodleMethod.core_group_get_groups:
+            case MoodleMethod.CoreGroupGetGroups:
                 return "core_group_get_groups";
-            case MoodleMethod.core_group_get_course_groups:
+            case MoodleMethod.CoreGroupGetCourseGroups:
                 return "core_group_get_course_groups";
-            case MoodleMethod.core_enrol_get_enrolled_users:
+            case MoodleMethod.CoreEnrolGetEnrolledUsers:
                 return "core_enrol_get_enrolled_users";
-            case MoodleMethod.core_course_create_courses:
+            case MoodleMethod.CoreCourseCreateCourses:
                 return "core_course_create_courses";
-            case MoodleMethod.core_course_update_courses:
+            case MoodleMethod.CoreCourseUpdateCourses:
                 return "core_course_update_courses";
-            case MoodleMethod.core_grades_get_grades:
+            case MoodleMethod.CoreGradesGetGrades:
                 return "core_grades_get_grades";
-            case MoodleMethod.core_grades_update_grades:
+            case MoodleMethod.CoreGradesUpdateGrades:
                 return "core_grades_update_grades";
-            case MoodleMethod.core_grading_get_definitions:
+            case MoodleMethod.CoreGradingGetDefinitions:
                 return "core_grading_get_definitions";
-            case MoodleMethod.core_calendar_get_calendar_events:
+            case MoodleMethod.CoreCalendarGetCalendarEvents:
                 return "core_calendar_get_calendar_events";
-            case MoodleMethod.core_calendar_create_calendar_events:
+            case MoodleMethod.CoreCalendarCreateCalendarEvents:
                 return "core_calendar_create_calendar_events";
-            case MoodleMethod.core_calendar_delete_calendar_events:
+            case MoodleMethod.CoreCalendarDeleteCalendarEvents:
                 return "core_calendar_delete_calendar_events";
-            case MoodleMethod.default_:
+            case MoodleMethod.Default:
                 return "";
         }
         throw new ArgumentOutOfRangeException("method");
@@ -178,7 +178,7 @@ public class Moodle
     /// <returns></returns>
     public Task<MoodleResponse<SiteInfo>> GetSiteInfo(string serviceHostName = "")
     {
-        var query = GetBaseQuery(MoodleMethod.core_webservice_get_site_info);
+        var query = GetBaseQuery(MoodleMethod.CoreWebserviceGetSiteInfo);
 
         query.AppendFilterQueryIfHasValue("&serviceshortnames[0]=", serviceHostName);
 
@@ -210,7 +210,7 @@ public class Moodle
     /// <returns></returns>
     public Task<MoodleResponse<UsersData>> GetUsers(string criteriaKey, string criteriaValue, params (string? Key, string? Value)[] criterias)
     {
-        var query = GetBaseQuery(MoodleMethod.core_user_get_users);
+        var query = GetBaseQuery(MoodleMethod.CoreUserGetUsers);
 
         query.Append("&criteria[0][key]=").Append(criteriaKey)
             .Append("&criteria[0][value]=").Append(criteriaValue);
@@ -242,7 +242,7 @@ public class Moodle
     /// <returns></returns>
     public Task<MoodleResponse<User>> GetUsersByField(string field, params string[] values)
     {
-        var query = GetBaseQuery(MoodleMethod.core_user_get_users_by_field);
+        var query = GetBaseQuery(MoodleMethod.CoreUserGetUsersByField);
         query.AppendFilterQuery("&field=", field);
 
         for (int i = 0; i < values.Length; i++)
@@ -260,7 +260,7 @@ public class Moodle
     /// <returns></returns>
     public Task<MoodleResponse<Cources>> GetUserCourses(int userId)
     {
-        var query = GetBaseQuery(MoodleMethod.core_enrol_get_users_courses);
+        var query = GetBaseQuery(MoodleMethod.CoreEnrolGetUsersCourses);
         query.AppendFilterQuery("&userid=", userId);
 
         return Get<Cources>(query);
@@ -300,7 +300,7 @@ public class Moodle
         string preferencesType = "", string preferencesValue = "",
         string customFieldsType = "", string customFieldsValue = "")
     {
-        var query = GetBaseQuery(MoodleMethod.core_user_create_users);
+        var query = GetBaseQuery(MoodleMethod.CoreUserCreateUsers);
         query.AppendFilterQuery("&users[0][username]=", userName)
             .AppendFilterQuery("&users[0][password]=", password)
             .AppendFilterQuery("&users[0][firstname]=", firstName)
@@ -364,7 +364,7 @@ public class Moodle
         string preferencesType = "", string preferencesValue = "",
         string customfieldsType = "", string customfieldsValue = "")
     {
-        var query = GetBaseQuery(MoodleMethod.core_user_update_users);
+        var query = GetBaseQuery(MoodleMethod.CoreUserUpdateUsers);
         query.AppendFilterQuery("&users[0][id]=", id)
             .AppendFilterQueryIfHasValue("&users[0][username]=", userName)
             .AppendFilterQueryIfHasValue("&users[0][password]=", password)
@@ -400,7 +400,7 @@ public class Moodle
     /// <returns></returns>
     public Task<MoodleResponse<Success>> DeleteUser(int id)
     {
-        var query = GetBaseQuery(MoodleMethod.core_user_update_users);
+        var query = GetBaseQuery(MoodleMethod.CoreUserUpdateUsers);
         query.AppendFilterQuery("&userids[0]=", id);
 
         return Get<Success>(query);
@@ -419,7 +419,7 @@ public class Moodle
     /// <returns></returns>
     public Task<MoodleResponse<Success>> AssignRoles(int roleId, int userId, string contextId = "", string contextLevel = "", int? instanceId = null)
     {
-        var query = GetBaseQuery(MoodleMethod.core_role_assign_roles);
+        var query = GetBaseQuery(MoodleMethod.CoreRoleAssignRoles);
         query.AppendFilterQuery("&assignments[0][roleid]=", roleId)
             .AppendFilterQuery("&assignments[0][userid]=", userId)
             .AppendFilterQueryIfHasValue("&assignments[0][contextid]=", contextId)
@@ -440,7 +440,7 @@ public class Moodle
     /// <returns></returns>
     public Task<MoodleResponse<Success>> UnassignRoles(int roleId, int userId, string contextId = "", string contextLevel = "", int? instanceId = null)
     {
-        var query = GetBaseQuery(MoodleMethod.core_role_unassign_roles);
+        var query = GetBaseQuery(MoodleMethod.CoreRoleUnassignRoles);
         query.AppendFilterQuery("&unassignments[0][roleid]=", roleId)
             .AppendFilterQuery("&unassignments[0][userid]=", userId)
             .AppendFilterQueryIfHasValue("&unassignments[0][contextid]=", contextId)
@@ -456,7 +456,7 @@ public class Moodle
 
     public Task<MoodleResponse<Success>> EnrolUser(int roleId, int userId, int courceId, int? timeStart = null, int? timeEnd = null, int? suspend = null)
     {
-        var query = GetBaseQuery(MoodleMethod.enrol_manual_enrol_users);
+        var query = GetBaseQuery(MoodleMethod.EnrolManualEnrolUsers);
         query.AppendFilterQuery("&enrolments[0][roleid]=", roleId)
             .AppendFilterQuery("&enrolments[0][userid]=", userId)
             .AppendFilterQuery("&enrolments[0][courceid]=", courceId)
@@ -469,7 +469,7 @@ public class Moodle
 
     public Task<MoodleResponse<Success>> AddGroupMember(int groupId, int userId)
     {
-        var query = GetBaseQuery(MoodleMethod.core_group_add_group_members);
+        var query = GetBaseQuery(MoodleMethod.CoreGroupAddGroupMembers);
         query.AppendFilterQuery("&members[0][groupid]=", groupId)
             .AppendFilterQuery("&members[0][userid]=", userId);
 
@@ -478,7 +478,7 @@ public class Moodle
 
     public Task<MoodleResponse<Success>> DeleteGroupMember(int groupId, int userId)
     {
-        var query = GetBaseQuery(MoodleMethod.core_group_delete_group_members);
+        var query = GetBaseQuery(MoodleMethod.CoreGroupDeleteGroupMembers);
         query.AppendFilterQuery("&members[0][groupid]=", groupId)
             .AppendFilterQuery("&members[0][userid]=", userId);
 
@@ -508,7 +508,7 @@ public class Moodle
     /// <returns></returns>
     public Task<MoodleResponse<Category>> GetCategories(string criteriaKey, string criteriaValue, int addSubCategories = 1)
     {
-        var query = GetBaseQuery(MoodleMethod.core_course_get_categories);
+        var query = GetBaseQuery(MoodleMethod.CoreCourseGetCategories);
         query.AppendFilterQuery("&criteria[0][key]=", criteriaKey)
             .AppendFilterQuery("&criteria[0][value]=", criteriaValue)
             .AppendFilterQueryIf(addSubCategories != 1, "&addsubcategories=", addSubCategories);
@@ -523,7 +523,7 @@ public class Moodle
     /// <returns></returns>
     public Task<MoodleResponse<Course>> GetCourses(int? options = null)
     {
-        var query = GetBaseQuery(MoodleMethod.core_course_get_courses);
+        var query = GetBaseQuery(MoodleMethod.CoreCourseGetCourses);
         query.AppendFilterQueryIfHasValue("&addsubcategories=", options);
 
         return Get<Course>(query);
@@ -536,7 +536,7 @@ public class Moodle
     /// <returns></returns>
     public Task<MoodleResponse<Content>> GetContents(int courseId)
     {
-        var query = GetBaseQuery(MoodleMethod.core_course_get_contents);
+        var query = GetBaseQuery(MoodleMethod.CoreCourseGetContents);
         query.AppendFilterQuery("&courseid=", courseId);
 
         return Get<Content>(query);
@@ -549,7 +549,7 @@ public class Moodle
     /// <returns></returns>
     public Task<MoodleResponse<Group>> GetGroup(int groupId)
     {
-        var query = GetBaseQuery(MoodleMethod.core_group_get_groups);
+        var query = GetBaseQuery(MoodleMethod.CoreGroupGetGroups);
         query.AppendFilterQuery("&groupids[0]=", groupId);
 
         return Get<Group>(query);
@@ -561,7 +561,7 @@ public class Moodle
     /// <returns></returns>
     public Task<MoodleResponse<Group>> GetGroups(int[] groupIds)
     {
-        var query = GetBaseQuery(MoodleMethod.core_group_get_groups);
+        var query = GetBaseQuery(MoodleMethod.CoreGroupGetGroups);
 
         for (int i = 0; i < groupIds.Length; i++)
         {
@@ -578,7 +578,7 @@ public class Moodle
     /// <returns></returns>
     public Task<MoodleResponse<Group>> GetCourseGroups(int courseId)
     {
-        var query = GetBaseQuery(MoodleMethod.core_group_get_course_groups);
+        var query = GetBaseQuery(MoodleMethod.CoreGroupGetCourseGroups);
         query.AppendFilterQuery("&courseid=", courseId);
 
         return Get<Group>(query);
@@ -591,7 +591,7 @@ public class Moodle
     /// <returns></returns>
     public Task<MoodleResponse<EnrolledUser>> GetEnrolledUsersByCourse(int courseId)
     {
-        var query = GetBaseQuery(MoodleMethod.core_enrol_get_enrolled_users);
+        var query = GetBaseQuery(MoodleMethod.CoreEnrolGetEnrolledUsers);
         query.AppendFilterQuery("&courseid=", courseId);
 
         return Get<EnrolledUser>(query);
@@ -633,7 +633,7 @@ public class Moodle
         int completeNotify = 0, string language = "", string forceTheme = "",
         string courcCourseformatoption = ""/*not implemented*/)
     {
-        var query = GetBaseQuery(MoodleMethod.core_course_create_courses);
+        var query = GetBaseQuery(MoodleMethod.CoreCourseCreateCourses);
         query.AppendFilterQuery("&courses[0][fullname]=", fullName)
                 .AppendFilterQuery("&courses[0][shortname]=", shortName)
                 .AppendFilterQuery("&courses[0][categoryid]=", categoryId)
@@ -667,7 +667,7 @@ public class Moodle
     /// <returns></returns>
     public Task<MoodleResponse<NewCourse>> CreateCourses((string FullName, string ShortName, int CategoryId)[] courses)
     {
-        var query = GetBaseQuery(MoodleMethod.core_course_create_courses);
+        var query = GetBaseQuery(MoodleMethod.CoreCourseCreateCourses);
         for (int i = 0; i < courses.Length; i++)
         {
             query.Append("&courses[").Append(i).Append("][fullname]=").Append(courses[i].FullName)
@@ -685,7 +685,7 @@ public class Moodle
         int completenotify = 0, string language = "", string forceTheme = "",
         string courcCourseformatoption = ""/*not implemented*/)
     {
-        var query = GetBaseQuery(MoodleMethod.core_course_update_courses);
+        var query = GetBaseQuery(MoodleMethod.CoreCourseUpdateCourses);
         query.AppendFilterQuery("&courses[0][id]=", id)
                 .AppendFilterQueryIfHasValue("&courses[0][fullname]=", fullName)
                 .AppendFilterQueryIfHasValue("&courses[0][shortname]=", shortName)
@@ -726,7 +726,7 @@ public class Moodle
     /// <returns></returns>
     public Task<MoodleResponse<Category>> GetGrades(int courseId, string component = "", int activityid = int.MaxValue, string[]? userIds = null)
     {
-        var query = GetBaseQuery(MoodleMethod.core_grades_get_grades);
+        var query = GetBaseQuery(MoodleMethod.CoreGradesGetGrades);
         query.AppendFilterQuery("&courseid=", courseId)
                 .AppendFilterQueryIfHasValue("&component=", component)
                 .AppendFilterQueryIf(activityid != int.MaxValue, "&activityid=", activityid);
@@ -751,7 +751,7 @@ public class Moodle
 
     public Task<MoodleResponse<ListOfEvents>> GetCalanderEvents(int[]? groupids = null, int[]? courseIds = null, int[]? eventIds = null)
     {
-        var query = GetBaseQuery(MoodleMethod.core_calendar_get_calendar_events);
+        var query = GetBaseQuery(MoodleMethod.CoreCalendarGetCalendarEvents);
 
         if (groupids is not null)
             for (int i = 0; i < groupids.Length; i++)
@@ -774,7 +774,7 @@ public class Moodle
          string[]? eventTypes = null, DateTime[]? timeStarts = null, TimeSpan[]? timeDurations = null,
          int[]? visible = null, int[]? sequences = null)
     {
-        var query = GetBaseQuery(MoodleMethod.core_calendar_create_calendar_events);
+        var query = GetBaseQuery(MoodleMethod.CoreCalendarCreateCalendarEvents);
 
         for (int i = 0; i < names.Length; i++)
             query.Append("&events[").Append(i).Append("][name]=").Append(names[i]);
@@ -825,7 +825,7 @@ public class Moodle
 
     public Task<MoodleResponse<ListOfEvents>> DeleteCalanderEvents(int[]? eventIds, int[]? repeats, string[]? descriptions = null)
     {
-        var query = GetBaseQuery(MoodleMethod.core_calendar_delete_calendar_events);
+        var query = GetBaseQuery(MoodleMethod.CoreCalendarDeleteCalendarEvents);
 
         if (repeats is not null)
             for (int i = 0; i < repeats.Length; i++)
@@ -850,7 +850,7 @@ public class Moodle
     public Task<MoodleResponse<Group>> CreateGroups(string[]? names = null, int[]? courseids = null, string[]? descriptions = null,
         int[]? descriptionFormats = null, string[]? enrolmentKeys = null, string[]? idNumbers = null)
     {
-        var query = GetBaseQuery(MoodleMethod.core_group_create_groups);
+        var query = GetBaseQuery(MoodleMethod.CoreGroupCreateGroups);
 
         if (names is not null)
             for (int i = 0; i < names.Length; i++)
