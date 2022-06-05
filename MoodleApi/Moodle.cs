@@ -125,7 +125,7 @@ public class Moodle
     private StringBuilder GetBaseQuery(MoodleMethod moodleMethod, MoodleFormat moodleFormat = MoodleFormat.JSON)
     {
         if (TokenIsSet is false)
-            throw new Exception("Token is not set");
+            throw new ArgumentNullException("Token is not set");
 
         StringBuilder query = new StringBuilder("webservice/rest/server.php?wstoken=");
         query.Append(Token)
